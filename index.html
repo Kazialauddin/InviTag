@@ -1,0 +1,651 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InviTag — Premium Digital Invitation Platform</title>
+  <meta name="description" content="InviTag is a premium digital invitation platform for weddings, walima, engagements, birthdays, and special events." />
+  <meta name="keywords" content="digital invitation, wedding invitation, online invitation, walima invitation, premium invitation, invitation website" />
+  <meta name="author" content="InviTag" />
+  <meta name="robots" content="index, follow" />  <!-- Open Graph -->  <meta property="og:title" content="InviTag — Premium Digital Invitation Platform" />
+  <meta property="og:description" content="Elegant digital invitations for weddings and special events." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://invitag.com" />
+  <meta property="og:image" content="https://invitag.com/preview.jpg" />  <!-- Twitter Card -->  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="InviTag — Premium Digital Invitation Platform" />
+  <meta name="twitter:description" content="Elegant digital invitations for weddings and celebrations." />
+  <meta name="twitter:image" content="https://invitag.com/preview.jpg" />  <!-- Canonical -->  <link rel="canonical" href="https://invitag.com" />  <!-- Favicon -->  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #fffaf6;
+      color: #222;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1250px;
+      margin: auto;
+    }
+
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 999;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'Cormorant Garamond', serif;
+      color: #8b5e3c;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #444;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #b47a4f;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #c28a5e, #8b5e3c);
+      color: white;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s ease;
+      box-shadow: 0 10px 30px rgba(139,94,60,0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(139,94,60,0.3);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-top: 100px;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(194,138,94,0.18), transparent 70%);
+      top: -180px;
+      right: -150px;
+      z-index: -1;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 70px;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      line-height: 1;
+      margin-bottom: 24px;
+      color: #2b1a12;
+    }
+
+    .hero-text p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #5a5a5a;
+      margin-bottom: 35px;
+      max-width: 560px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #8b5e3c;
+      border: 1px solid rgba(139,94,60,0.2);
+      box-shadow: none;
+    }
+
+    .hero-card {
+      position: relative;
+      perspective: 1200px;
+    }
+
+    .invitation-box {
+      width: 100%;
+      max-width: 470px;
+      margin: auto;
+      background: linear-gradient(145deg, #fff, #f6ece4);
+      border-radius: 34px;
+      padding: 28px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .invitation-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(194,138,94,0.2);
+      border-radius: 34px;
+      pointer-events: none;
+    }
+
+    .invite-top {
+      text-align: center;
+      padding: 45px 20px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #fff, #fff7f0);
+      border: 1px solid rgba(194,138,94,0.15);
+    }
+
+    .invite-top h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      color: #8b5e3c;
+      margin-bottom: 10px;
+    }
+
+    .invite-top p {
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .tag-chip {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      background: #8b5e3c;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    section {
+      padding: 110px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 70px;
+    }
+
+    .section-title h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      color: #2b1a12;
+      margin-bottom: 16px;
+    }
+
+    .section-title p {
+      max-width: 700px;
+      margin: auto;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 28px;
+      padding: 35px 30px;
+      transition: 0.4s ease;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 24px 50px rgba(0,0,0,0.08);
+    }
+
+    .feature-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(194,138,94,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 24px;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 14px;
+      font-size: 1.2rem;
+      color: #2b1a12;
+    }
+
+    .feature-card p {
+      line-height: 1.8;
+      color: #666;
+    }
+
+    .showcase {
+      background: linear-gradient(180deg, #fff, #f9f2ec);
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .showcase-card {
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.05);
+      transition: 0.4s ease;
+    }
+
+    .showcase-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .showcase-image {
+      height: 260px;
+      background: linear-gradient(135deg, #d6b193, #8b5e3c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+    }
+
+    .showcase-content {
+      padding: 28px;
+    }
+
+    .showcase-content h3 {
+      margin-bottom: 12px;
+      color: #2b1a12;
+    }
+
+    .showcase-content p {
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .cta {
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, #2b1a12, #8b5e3c);
+      color: white;
+      border-radius: 36px;
+      padding: 80px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      top: -200px;
+      right: -100px;
+    }
+
+    .cta-box h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.8rem;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-box p {
+      max-width: 760px;
+      margin: auto auto 35px;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 2;
+    }
+
+    footer {
+      padding: 45px 0;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      background: white;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-content p {
+      color: #666;
+    }
+
+    .socials {
+      display: flex;
+      gap: 16px;
+    }
+
+    .socials a {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f6ece4;
+      transition: 0.3s;
+    }
+
+    .socials a:hover {
+      background: #8b5e3c;
+      color: white;
+      transform: translateY(-4px);
+    }
+
+    @media (max-width: 980px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-text {
+        text-align: center;
+      }
+
+      .hero-text p {
+        margin: auto auto 35px;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-text h1 {
+        font-size: 4rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-text h1 {
+        font-size: 3rem;
+      }
+
+      .section-title h2,
+      .cta-box h2 {
+        font-size: 2.6rem;
+      }
+
+      .cta-box {
+        padding: 60px 25px;
+      }
+    }
+  </style></head>
+<body>  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">InviTag</div><div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#templates">Templates</a>
+      <a href="#contact">Contact</a>
+      <a href="#" class="btn">Get Started</a>
+    </div>
+  </nav>
+</div>
+
+  </header>  <section class="hero">
+    <div class="container hero-content"><div class="hero-text">
+    <h1>
+      Elegant Invitations <br>
+      Reimagined Digitally
+    </h1>
+
+    <p>
+      InviTag helps you create premium digital invitation experiences for weddings, receptions, engagements, family events, and celebrations — beautifully designed, modern, and memorable.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="#templates" class="btn">Explore Invitations</a>
+      <a href="#features" class="btn btn-secondary">See Features</a>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <div class="invitation-box">
+      <div class="tag-chip">PREMIUM</div>
+
+      <div class="invite-top">
+        <h3>Wedding Invite</h3>
+        <p>
+          Meraz & Sumaiya <br>
+          12 December 2026 <br>
+          A timeless celebration of love.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  </section>  <section id="features">
+    <div class="container"><div class="section-title">
+    <h2>Why Choose InviTag?</h2>
+    <p>
+      Designed for modern celebrations with premium aesthetics and seamless sharing experience.
+    </p>
+  </div>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">💌</div>
+      <h3>Luxury Invitation Design</h3>
+      <p>
+        Elegant layouts inspired by premium wedding cards and modern digital experiences.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <h3>Mobile Friendly</h3>
+      <p>
+        Smooth and responsive invitation pages that look stunning on every device.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Fast Sharing</h3>
+      <p>
+        Share invitations instantly through link, QR code, social media, or messaging apps.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">✨</div>
+      <h3>Personalized Experience</h3>
+      <p>
+        Add custom names, event details, galleries, countdowns, and RSVP options.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+  </section>  <section class="showcase" id="templates">
+    <div class="container"><div class="section-title">
+    <h2>Invitation Categories</h2>
+    <p>
+      Crafted for every memorable moment and celebration.
+    </p>
+  </div>
+
+  <div class="showcase-grid">
+
+    <div class="showcase-card">
+      <div class="showcase-image">Wedding</div>
+      <div class="showcase-content">
+        <h3>Wedding Invitations</h3>
+        <p>
+          Elegant wedding invitation pages with countdowns, galleries, RSVP, and maps.
+        </p>
+      </div>
+    </div>
+
+    <div class="showcase-card">
+      <div class="showcase-image">Walima</div>
+      <div class="showcase-content">
+        <h3>Reception & Walima</h3>
+        <p>
+          Beautiful digital reception invitations designed for modern families and guests.
+        </p>
+      </div>
+    </div>
+
+    <div class="showcase-card">
+      <div class="showcase-image">Events</div>
+      <div class="showcase-content">
+        <h3>Special Events</h3>
+        <p>
+          Birthday, anniversary, aqiqah, engagement, corporate events and more.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+  </section>  <section class="cta" id="contact">
+    <div class="container"><div class="cta-box">
+    <h2>Create Your Perfect Invitation</h2>
+
+    <p>
+      Your celebration deserves more than just a card. Launch elegant digital invitations with a premium experience through InviTag.
+    </p>
+
+    <a href="mailto:hello@invitag.com" class="btn">
+      Contact InviTag
+    </a>
+  </div>
+
+</div>
+
+  </section>  <footer>
+    <div class="container footer-content">
+      <p>
+        © 2026 InviTag.com — Elegant Digital Invitation Platform.
+      </p><div class="socials">
+    <a href="#">FB</a>
+    <a href="#">IG</a>
+    <a href="#">YT</a>
+  </div>
+</div>
+
+  </footer>  <script>
+    const header = document.querySelector('header');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
+      } else {
+        header.style.boxShadow = 'none';
+      }
+    });
+  </script>  <!-- Structured Data -->  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "InviTag",
+    "url": "https://invitag.com",
+    "logo": "https://invitag.com/logo.png",
+    "description": "Premium digital invitation platform for weddings and events."
+  }
+  </script></body>
+</html>
