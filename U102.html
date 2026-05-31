@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রিমিয়াম সিনেমাটিক বায়োডাটা | InviTag</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind_Siliguri:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d0a07; /* গভীর শরতের ডার্ক ব্যাকগ্রাউন্ড */
+        }
+        .serif-font {
+            font-family: 'Playfair Display', 'Hind Siliguri', serif;
+        }
+        /* গ্লাস-মরফিজম এফেক্ট */
+        .glass-card {
+            background: rgba(26, 18, 12, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 163, 89, 0.15);
+        }
+        /* কাস্টম স্ক্রলবার */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0a07;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 163, 89, 0.3);
+            border-radius: 10px;
+        }
+        /* নিয়ন গোল্ডেন গ্লো এবং টেক্সট ইফেক্ট */
+        .gold-text-glow {
+            text-shadow: 0 0 10px rgba(212, 163, 89, 0.3);
+        }
+
+        /* A4 প্রিন্ট অপ্টিমাইজেশন */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body {
+                background-color: #0d0a07 !important;
+            }
+            .no-print, canvas {
+                display: none !important;
+            }
+            .glass-card {
+                background-color: rgba(26, 18, 12, 0.95) !important;
+                backdrop-filter: none !important;
+                border: 1px solid rgba(212, 163, 89, 0.3) !important;
+                box-shadow: none !important;
+            }
+            @page {
+                size: A4;
+                margin: 0.3in;
+            }
+            #aiSummaryContent {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-stone-200 antialiased relative min-h-screen overflow-x-hidden">
+
+    <canvas id="autumnCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <main class="relative z-10 max-w-4xl mx-auto px-4 pt-1 pb-6 sm:px-6 flex flex-col items-center">
+        
+       
+        <div class="w-full glass-card rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden">
+               <div class="relative mb-4">
+                    <!-- Dynamic Profile Picture Path -->
+                    <img id="profileImg" src="images/profile.jpg" alt="Md. Abdur Rahim" 
+                         class="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover border-2 border-sky-500/40 p-1 bg-slate-900 shadow-xl shadow-sky-500/10 mx-auto transition-all duration-500 hover:scale-110 hover:shadow-[0_0_25px_rgba(14,165,233,0.5)] hover:border-sky-400 cursor-pointer"
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300';">
+                    <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-sky-500 text-slate-950 text-xs font-bold px-2.5 py-0.5 rounded-full shadow-md no-print">
+                      
+                        u-102
+                    </span>
+                </div>
+            <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-amber-500/30 rounded-tl-3xl"></div>
+            <div class="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-amber-500/30 rounded-tr-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-amber-500/30 rounded-bl-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-amber-500/30 rounded-br-3xl"></div>
+
+            <div class="text-center border-b border-amber-500/15 pb-8 mb-8">
+                <span class="text-xs uppercase tracking-widest text-amber-400/80 font-semibold bg-amber-500/10 px-4 py-1.5 rounded-full border border-amber-500/20 shadow-inner">পাত্রের জীবনবৃত্তান্ত</span>
+                <h1 class="serif-font text-3xl sm:text-4xl font-bold mt-4 tracking-wide text-amber-100 gold-text-glow">Md. Abdur Rahim</h1>
+              
+                
+                <div class="mt-6 bg-amber-950/20 border border-amber-500/10 rounded-xl p-4 text-left shadow-inner">
+                    <button onclick="toggleAiSummary()" class="w-full flex items-center justify-between cursor-pointer group focus:outline-none">
+                        <h5 class="text-amber-400 font-medium text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-brain text-xs"></i> এআই সারসংক্ষেপ (AI Summary)
+                        </h5>
+                        <i id="aiSummaryIcon" class="fa-solid fa-chevron-down text-amber-500/50 text-xs transition-transform duration-300 no-print"></i>
+                    </button>
+                    <div id="aiSummaryContent" class="hidden mt-3 border-t border-amber-500/10 pt-3">
+                        <p class="text-stone-300 text-sm leading-relaxed text-justify">
+                            পাত্র একজন মার্জিত, প্রগতিশীল এবং দ্বীনি মূল্যবোধসম্পন্ন মানুষ। তিনি বর্তমানে ভূমি মন্ত্রনালয়ের অধীনে, উপজেলা সেটেলমেন্ট অফিসে কর্মরত আছেন। পারিবারিক শিক্ষার মেলবন্ধনে তিনি নিজের জীবনকে সুন্দরভাবে গুছিয়ে নিয়েছেন। তিনি জীবনসঙ্গী হিসেবে এমন একজনকে খুঁজছেন যিনি পারস্পরিক শ্রদ্ধা, সততা এবং পারিবারিক বন্ধনকে মূল্যায়ন করবেন।
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-10">
+                
+                <div>
+                    <h3 class="serif-font text-lg font-semibold text-amber-400 flex items-center gap-3 border-b border-amber-500/10 pb-2 mb-4">
+                        <i class="fa-solid fa-user-tie text-base"></i> ব্যক্তিগত তথ্য
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">জন্ম সন:</span> <span class="font-medium text-stone-200">5 january 1996</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">উচ্চতা:</span> <span class="font-medium text-stone-200">5'foot 6"inch</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">রক্তের গ্রুপ:</span> <span class="font-medium text-stone-200">O+ (পজিটিভ)</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">ওজন:</span> <span class="font-medium text-stone-200">72kg.</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">বৈবাহিক অবস্থা:</span> <span class="font-medium text-stone-200">অবিবাহিত</span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="serif-font text-lg font-semibold text-amber-400 flex items-center gap-3 border-b border-amber-500/10 pb-2 mb-4">
+                        <i class="fa-solid fa-graduation-cap text-base"></i> শিক্ষা ও কর্মজীবন
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">শিক্ষাগত মাধ্যম:</span> <span class="font-medium text-stone-200">জেনারেল</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">সর্বোচ্চ ডিগ্রি:</span> <span class="font-medium text-stone-200">Msc-Department of Mathematic </span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">শিক্ষা প্রতিষ্ঠান:</span> <span class="font-medium text-stone-200">Gov’t Titumir College.</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">পেশা:</span> <span class="font-medium text-stone-200">Copyist Cum Bench Assistant (16th grade).</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">মাসিক আয়:</span> <span class="font-medium text-stone-200">আলোচনা সাপেক্ষে</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">কর্মস্থল- পোস্টিং:</span> <span class="font-medium text-stone-200"> Lauhajang, Munshigang.</span></div>
+			 <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">বর্তমান পোস্টিং</span> <span class="font-medium text-stone-200">Alamnagar Housing, Savar.</span></div>
+			<div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">স্থায়ী ঠিকানা:</span> <span class="font-medium text-stone-200">527/5/C, Shamim Sharoni, West Shewrapara, Mirpur, Dhaka-1216.</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">বর্তমান ঠিকানা:</span> <span class="font-medium text-stone-200">(Vill+Post)-Shaydabad, Upazill- Roypura, District: Narshingdi</span></div>                    
+
+			</div>
+                </div>
+
+                <div>
+                    <h3 class="serif-font text-lg font-semibold text-amber-400 flex items-center gap-3 border-b border-amber-500/10 pb-2 mb-4">
+                        <i class="fa-solid fa-house-chimney text-base"></i> পারিবারিক ও ঠিকানা সংক্রান্ত তথ্য
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">পিতার নাম:</span> <span class="font-medium text-stone-200">Md. Joynal Abedin </span></div>
+			<div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">পিতার পেশা:</span> <span class="font-medium text-stone-200">Retired (Physically Challanged)</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">মাতার নাম:</span> <span class="font-medium text-stone-200">Shahazadi Begum</span></div>
+                         <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">মাতার পেশা:</span> <span class="font-medium text-stone-200">House wife</span></div>
+			 <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">ভাই ও বোন:</span> <span class="font-medium text-stone-200">৩ ভাই, ১ বোন (সবাই বিবাহিত)</span></div>
+               		 <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">1# Md.Murad Hossain</span> <span class="font-medium text-stone-200">Customer Relation Assistant, Government service (Metro Rail)</span></div>
+               		 <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">2# Md. Nurullah Rony</span> <span class="font-medium text-stone-200">Driving Post, Government Service (Health Engeneering Department)</span></div>			
+			 <div class="flex justify-between py-1.5 border-b border-stone-800/40"><span class="text-stone-400">3# Umme Kulsum Mukta</span> <span class="font-medium text-stone-200">House Wife</span></div>	
+			
+                        
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="serif-font text-lg font-semibold text-amber-400 flex items-center gap-3 border-b border-amber-500/10 pb-2 mb-4">
+                        <i class="fa-solid fa-heart-pulse text-base"></i> যেমন জীবনসঙ্গী আশা করেন
+                    </h3>
+                    <div class="bg-amber-950/10 border border-amber-500/5 rounded-xl p-4 text-sm space-y-2 text-stone-300 leading-relaxed text-justify">
+                   
+                        <p><i class="fa-solid fa-check text-amber-500 mr-2"></i> পাঁচ ওয়াক্ত নামাজ আদায় করার মানসিকতা সম্পন্ন এবং শালীন জীবনযাপনে অভ্যস্ত হতে হবে।</p>
+                        <p><i class="fa-solid fa-check text-amber-500 mr-2"></i> পারিবারিক মূল্যবোধকে সম্মান করতে হবে এবং সৎ চরিত্রের অধিকারী হতে হবে।</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-12 text-center border-t border-amber-500/15 pt-8">
+              
+                <a href="tel:01682381935" class="inline-flex items-center gap-2 bg-gradient-to-r cursor-pointer from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-bold px-8 py-3 rounded-xl transition duration-300 transform hover:-translate-y-0.5 shadow-[0_4px_20px_rgba(212,163,89,0.3)]">
+                    <i class="fa-solid fa-phone"></i> যোগাযোগ
+                </a>
+
+                <!-- প্রিন্ট বাটন এখন নিচে -->
+                <div class="mt-8 no-print">
+                    <button onclick="window.print()" class="inline-flex items-center gap-2 border border-amber-500/30 hover:bg-amber-500/10 text-amber-500 text-sm font-medium px-6 py-2 rounded-xl transition-all duration-300 cursor-pointer">
+                        <i class="fa-solid fa-print"></i> প্রিন্ট বায়োডাটা (A4)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-8 text-center text-xs text-stone-500 tracking-wide">
+            Powered by <span class="text-amber-500/70 font-medium"></span> @ <a href="https://invitag.com" target="_blank" class="hover:text-amber-400 underline transition">InviTag.com । A Global Brand  </a>
+        </footer>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('autumnCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // পাতার অবজেক্ট স্ট্রাকচার
+        class Leaf {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -height - 20;
+                this.size = Math.random() * 10 + 6;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1.2 + 0.8;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = Math.random() * 0.02 - 0.01;
+                
+                // শরতের সোনালী, লালচে এবং তামাটে রঙের সংমিশ্রণ
+                const colors = [
+                    'rgba(212, 163, 89, ',  // Soft Gold
+                    'rgba(184, 115, 51, ',  // Copper
+                    'rgba(197, 90, 17, ',   // Autumn Red
+                    'rgba(245, 158, 11, '   // Amber
+                ];
+                this.colorBase = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.4 + 0.2;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.y / 30) * 0.3; // একটু দুলতে দুলতে পড়বে
+                this.rotation += this.rotationSpeed;
+
+                // স্ক্রিন পার হয়ে গেলে আবার ওপরে চলে যাবে
+                if (this.y > height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                ctx.fillStyle = this.colorBase + this.opacity + ')';
+                
+                // ক্যানভাসে একটি পাতার আকৃতি তৈরি করা (SVG বা ইমেজ ছাড়া লাইটওয়েট মেথড)
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.quadraticCurveTo(this.size / 2, -this.size / 2, 0, this.size);
+                ctx.quadraticCurveTo(-this.size / 2, -this.size / 2, 0, -this.size);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+
+        // ৬০টি পাতা দিয়ে কণা তৈরি (মোবাইল ফ্রেন্ডলি রাখার জন্য সংখ্যা সীমিত)
+        const leafCount = 50;
+        const leaves = [];
+        for (let i = 0; i < leafCount; i++) {
+            leaves.push(new Leaf());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            leaves.forEach(leaf => {
+                leaf.update();
+                leaf.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        function toggleAiSummary() {
+            const content = document.getElementById('aiSummaryContent');
+            const icon = document.getElementById('aiSummaryIcon');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+    </script>
+</body>
+</html>
