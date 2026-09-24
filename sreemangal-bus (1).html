@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>শ্রীমঙ্গল যাত্রা</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#dcebe4;
+  --panel:rgba(255,255,255,.80);
+  --panel-line:rgba(12,60,35,.14);
+  --ink:#10301f;
+  --ink2:#3d5c4a;
+  --accent:#0c7a43;
+  --accent-ink:#ffffff;
+  --gold:#f0b31c;
+  --shadow:0 8px 28px rgba(10,40,25,.24);
+  color-scheme:light dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1b16;
+    --panel:rgba(14,30,22,.78);
+    --panel-line:rgba(255,255,255,.14);
+    --ink:#eaf6ee;
+    --ink2:#b4cfbd;
+    --accent:#22a866;
+    --shadow:0 8px 28px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1b16;
+  --panel:rgba(14,30,22,.78);
+  --panel-line:rgba(255,255,255,.14);
+  --ink:#eaf6ee;
+  --ink2:#b4cfbd;
+  --accent:#22a866;
+  --shadow:0 8px 28px rgba(0,0,0,.55);
+}
+[hidden]{display:none!important}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans Bengali","Hind Siliguri","Kalpurush","Nirmala UI","Bangla MN","Shonar Bangla",system-ui,sans-serif;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;
+}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+
+/* loader */
+#loader{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .6s ease,visibility .6s}
+#loader.done{opacity:0;visibility:hidden}
+#loader p{margin:0;font-weight:600;color:var(--ink2);text-align:center;padding:0 24px}
+.spin{width:38px;height:38px;border-radius:50%;border:4px solid var(--panel-line);border-top-color:var(--accent);animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* top bar */
+#top{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;pointer-events:none}
+.pill{background:var(--panel);border:1px solid var(--panel-line);box-shadow:var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-radius:999px;padding:8px 14px;font-size:14px;line-height:1.2;color:var(--ink)}
+.pill b{font-weight:800}
+.pill.sub{color:var(--ink2);font-weight:600}
+
+/* pin over bus */
+#pin{position:fixed;z-index:9;transform:translate(-50%,-100%);border:0;background:none;padding:0;cursor:pointer;font:inherit}
+#pin span{display:block;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:14px;padding:9px 14px;border-radius:999px;
+  box-shadow:var(--shadow);animation:bob 1.6s ease-in-out infinite;white-space:nowrap}
+#pin span::after{content:"";position:absolute;left:50%;bottom:-6px;width:12px;height:12px;background:var(--accent);transform:translateX(-50%) rotate(45deg);border-radius:2px;z-index:-1}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* docks */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:12px 14px calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.dock>*{pointer-events:auto}
+.tip{margin:0;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--panel-line);border-radius:999px;padding:6px 12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.btn{font:inherit;font-weight:800;font-size:15px;border:0;border-radius:999px;padding:13px 20px;cursor:pointer;
+  background:var(--panel);color:var(--ink);border:1px solid var(--panel-line);box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .15s ease}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn:focus-visible,#pin:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.trip{width:min(440px,100%);background:var(--panel);border:1px solid var(--panel-line);border-radius:18px;padding:10px 14px 12px;box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.labels{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink2);font-weight:600;gap:8px}
+.labels #speedTxt{color:var(--ink);font-weight:800;font-size:14px}
+.bar{position:relative;height:8px;border-radius:99px;background:var(--panel-line);margin:14px 6px 4px}
+.bar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;background:linear-gradient(90deg,#4fae5c,var(--accent))}
+.bar em{position:absolute;top:-13px;left:0;font-style:normal;font-size:20px;transform:translateX(-50%)}
+.seatinfo{margin:6px 0 0;font-size:12px;color:var(--ink2);text-align:center}
+
+#welcome{position:fixed;z-index:12;left:50%;top:calc(96px + env(safe-area-inset-top,0px));transform:translateX(-50%);width:min(400px,calc(100% - 28px));
+  background:var(--panel);border:1px solid var(--panel-line);border-radius:22px;box-shadow:var(--shadow);padding:18px 18px 16px;text-align:center;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:pop .5s cubic-bezier(.2,1.3,.4,1)}
+#welcome h2{margin:0 0 4px;font-size:22px;font-weight:800}
+#welcome p{margin:0 0 14px;color:var(--ink2);font-size:14px;line-height:1.55}
+@keyframes pop{from{opacity:0;transform:translateX(-50%) scale(.9)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+
+#toast{position:fixed;z-index:13;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--panel-line);border-radius:999px;
+  padding:10px 18px;font-weight:700;box-shadow:var(--shadow)}
+#plan{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:10px}
+#plan .sheet{position:relative;width:min(460px,100%);max-height:100%;overflow:auto;background:var(--bg);color:var(--ink);border:1px solid var(--panel-line);border-radius:20px;box-shadow:var(--shadow);padding:14px 12px 16px;-webkit-user-select:text;user-select:text}
+#plan h3{margin:0 0 4px;font-size:18px}
+#plan .leg{margin:0 0 10px;font-size:12px;color:var(--ink2)}
+#plan .x{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:1px solid var(--panel-line);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.prow{display:grid;grid-template-columns:18px 1fr 1fr 10px 1fr 1fr;gap:4px;margin-bottom:4px;align-items:stretch}
+.prow.rear{grid-template-columns:18px repeat(5,1fr)}
+.prow.head{grid-template-columns:1fr 1fr;font-size:12px;font-weight:700;color:var(--ink2);margin:0 0 6px 22px}
+.prow.head span:last-child{text-align:right}
+.rl{font-size:11px;color:var(--ink2);display:flex;align-items:center;justify-content:center;font-weight:700}
+.cell{background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:5px 2px;font-size:10.5px;line-height:1.2;text-align:center;min-height:46px;display:flex;flex-direction:column;justify-content:center;gap:2px;word-break:break-word}
+.cell b{font-size:12px;color:var(--accent)}
+.cell.doc{background:#fff0bd;border-color:var(--gold);color:#3a2a00}.cell.doc b{color:#8a5a00}
+.cell.free{border-style:dashed;opacity:.65}
+@media (prefers-reduced-motion:reduce){#pin span{animation:none}#welcome{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="শ্রীমঙ্গলগামী ৩৩ সিটের মিনি এসি বাসের ত্রিমাত্রিক দৃশ্য"></canvas>
+
+<div id="loader"><div class="spin"></div><p id="loaderTxt">শ্রীমঙ্গলের পথ তৈরি হচ্ছে…</p></div>
+
+<header id="top">
+  <div class="pill"><b>🍃 শ্রীমঙ্গল যাত্রা</b></div>
+  <div class="pill sub">৩৩ সিট • মিনি এসি</div>
+</header>
+
+<button id="pin" hidden><span>👆 বাসে ট্যাপ করুন</span></button>
+
+<div id="outsideHud" class="dock" hidden>
+  <p class="tip">টেনে ঘোরান • পিঞ্চ করে জুম করুন</p>
+  <div class="row"><button id="enterBtn" class="btn primary">🚪 বাসে উঠুন</button><button class="btn planBtn">📋 সিট প্ল্যান</button></div>
+</div>
+
+<div id="insideHud" class="dock" hidden>
+  <div class="trip">
+    <div class="labels"><span>যাত্রা শুরু</span><span id="speedTxt">০ কি.মি./ঘণ্টা</span><span>শ্রীমঙ্গল 🍃</span></div>
+    <div class="bar"><i id="barFill"></i><em id="busIcon">🚌</em></div>
+    <p class="seatinfo">২+২ বিন্যাসে ৭ সারি (২৮ সিট) + পেছনে ৫ জনের সিট = ৩৩ সিট</p>
+  </div>
+  <div class="row">
+    <button id="seatBtn" class="btn">🪑 ২৯ নং জানালার সিটে বসুন</button>
+    <button id="exitBtn" class="btn">⬅ বাইরে যান</button>
+    <button class="btn planBtn">📋 সিট প্ল্যান</button>
+  </div>
+</div>
+
+<div id="welcome" hidden>
+  <h2>শ্রীমঙ্গলে স্বাগতম! 🍵</h2>
+  <p>চায়ের রাজধানীতে পৌঁছে গেছেন। সবুজ পাহাড়, চা-বাগান আর কুয়াশা মাখা সকাল আপনার অপেক্ষায়।</p>
+  <div class="row">
+    <button id="againBtn" class="btn primary">🔁 আবার যাত্রা</button>
+    <button id="leaveBtn" class="btn">⬅ বাইরে নামুন</button>
+  </div>
+</div>
+
+<div id="plan" hidden><div class="sheet"><button id="planClose" class="x" aria-label="বন্ধ">✕</button>
+<h3>📋 সিট প্ল্যান</h3><p class="leg">🟨 ডাক্তার • সামনে থেকে পেছনে • বাম পাশে দরজা</p><div id="planGrid"></div></div></div>
+<div id="toast" hidden></div>
+
+<script>
+async function main(){
+'use strict';
+const T = window.THREE;
+const $ = id => document.getElementById(id);
+const bn = s => String(s).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+const smooth = (a,b,x) => { const t = clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+const easeIO = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+const TAU = Math.PI*2;
+const V = (x,y,z) => new T.Vector3(x,y,z);
+function rng(seed){ let a = seed>>>0; return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a>>>15, 1|a); t = t + Math.imul(t ^ t>>>7, 61|t) ^ t; return ((t ^ t>>>14)>>>0)/4294967296; }; }
+
+const FONT = '"Noto Sans Bengali","Hind Siliguri","Kalpurush","Nirmala UI","Bangla MN","Shonar Bangla",system-ui,sans-serif';
+try{
+  await Promise.race([
+    Promise.all([document.fonts.load('800 60px "Noto Sans Bengali"','শ্রীমঙ্গল ০১২৩'), document.fonts.load('600 40px "Noto Sans Bengali"','শ্রীমঙ্গল')]),
+    new Promise(r => setTimeout(r, 3500))
+  ]);
+}catch(e){}
+
+/* ---------- renderer ---------- */
+const canvas = $('c');
+let renderer;
+try{
+  renderer = new T.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'});
+}catch(e){
+  $('loaderTxt').textContent = 'দুঃখিত, এই ডিভাইসে ত্রিমাত্রিক গ্রাফিক্স (WebGL) চালু করা যায়নি।';
+  document.querySelector('.spin').style.display = 'none';
+  return;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = T.PCFSoftShadowMap;
+
+const scene = new T.Scene();
+const FOG = 0xdcebe4;
+scene.background = new T.Color(FOG);
+scene.fog = new T.Fog(FOG, 55, 225);
+const camera = new T.PerspectiveCamera(58, 1, 0.1, 900);
+
+/* ---------- canvas texture helpers ---------- */
+function canvasTex(w,h,draw,opts){
+  opts = opts || {};
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'); draw(g,w,h);
+  const t = new T.CanvasTexture(c); t.anisotropy = 4;
+  if(opts.repeat){ t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(opts.repeat[0], opts.repeat[1]); }
+  return t;
+}
+function fitFont(g,text,weight,px,maxW){
+  g.font = weight+' '+px+'px '+FONT;
+  const w = g.measureText(text).width;
+  if(w > maxW){ px = Math.floor(px*maxW/w); g.font = weight+' '+px+'px '+FONT; }
+  return px;
+}
+
+/* ---------- sky, sun, clouds, far hills ---------- */
+const skyTex = canvasTex(16,512,(g,w,h)=>{
+  const gr = g.createLinearGradient(0,0,0,h);
+  gr.addColorStop(0,'#4d9de0'); gr.addColorStop(.30,'#86c3ee'); gr.addColorStop(.47,'#cfe8f2'); gr.addColorStop(.52,'#e6f2ec'); gr.addColorStop(1,'#e6f2ec');
+  g.fillStyle = gr; g.fillRect(0,0,w,h);
+});
+const sky = new T.Mesh(new T.SphereGeometry(420,24,16), new T.MeshBasicMaterial({map:skyTex, side:T.BackSide, fog:false, depthWrite:false}));
+scene.add(sky);
+
+try{
+  const envScene = new T.Scene();
+  envScene.add(new T.Mesh(new T.SphereGeometry(50,24,16), new T.MeshBasicMaterial({map:skyTex, side:T.BackSide})));
+  const pm = new T.PMREMGenerator(renderer);
+  scene.environment = pm.fromScene(envScene, 0.03).texture;
+  pm.dispose();
+}catch(e){}
+
+const cloudTex = canvasTex(256,128,(g,w,h)=>{
+  const R = rng(7);
+  for(let i=0;i<16;i++){
+    const x = 40+R()*176, y = 46+R()*36, r = 20+R()*30;
+    const gr = g.createRadialGradient(x,y,0,x,y,r);
+    gr.addColorStop(0,'rgba(255,255,255,.92)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(x,y,r,0,7); g.fill();
+  }
+});
+const clouds = new T.Group(); scene.add(clouds);
+{
+  const R = rng(99);
+  for(let i=0;i<12;i++){
+    const s = new T.Sprite(new T.SpriteMaterial({map:cloudTex, transparent:true, opacity:.85, fog:false, depthWrite:false}));
+    const a = R()*TAU, el = .16+R()*.35, r = 330;
+    s.position.set(Math.sin(a)*Math.cos(el)*r, Math.sin(el)*r, Math.cos(a)*Math.cos(el)*r);
+    const k = 120+R()*90; s.scale.set(k, k*.5, 1);
+    clouds.add(s);
+  }
+}
+const sunTex = canvasTex(128,128,(g,w,h)=>{
+  const gr = g.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,'rgba(255,250,225,1)'); gr.addColorStop(.18,'rgba(255,244,200,.95)'); gr.addColorStop(.4,'rgba(255,236,170,.35)'); gr.addColorStop(1,'rgba(255,230,160,0)');
+  g.fillStyle = gr; g.fillRect(0,0,w,h);
+});
+const sunDir = V(-18,30,22).normalize();
+const sunSpr = new T.Sprite(new T.SpriteMaterial({map:sunTex, transparent:true, fog:false, depthWrite:false}));
+sunSpr.position.copy(sunDir).multiplyScalar(380); sunSpr.scale.set(90,90,1); scene.add(sunSpr);
+
+{
+  const R = rng(5);
+  [[300,0x9cc4b0,26],[345,0xb2d2c1,22]].forEach(([rad,color,n])=>{
+    const mat = new T.MeshBasicMaterial({color, fog:false});
+    for(let i=0;i<n;i++){
+      const a = i/n*TAU + R()*.1;
+      const m = new T.Mesh(new T.SphereGeometry(1,12,8), mat);
+      const w = 40+R()*45, hgt = 14+R()*20;
+      m.scale.set(w, hgt, 30+R()*25);
+      m.position.set(Math.sin(a)*rad, -3, Math.cos(a)*rad);
+      scene.add(m);
+    }
+  });
+}
+const farGround = new T.Mesh(new T.PlaneGeometry(1600,1600), new T.MeshLambertMaterial({color:0x88b064}));
+farGround.rotation.x = -Math.PI/2; farGround.position.y = -0.4; scene.add(farGround);
+
+/* ---------- lights ---------- */
+scene.add(new T.HemisphereLight(0xdff1ff, 0x5b7a3a, .62));
+const sun = new T.DirectionalLight(0xfff1d0, .95);
+sun.position.copy(sunDir).multiplyScalar(40);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera, {left:-9,right:9,top:9,bottom:-9,near:1,far:90});
+sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.03;
+scene.add(sun); scene.add(sun.target);
+[[0,2.45,2.6],[0,2.45,-0.3],[0,2.45,-3.0]].forEach(p=>{
+  const l = new T.PointLight(0xfff2d8,.75,9,1); l.position.set(p[0],p[1],p[2]); scene.add(l);
+});
+
+/* ---------- materials ---------- */
+const std = (color,o) => new T.MeshStandardMaterial(Object.assign({color, roughness:.5, metalness:.05}, o||{}));
+const M = {
+  cream:  std(0xf7f2e4,{roughness:.4}),
+  green:  std(0x0c7a43,{roughness:.35,metalness:.15}),
+  gold:   std(0xf0b31c,{roughness:.35,metalness:.4}),
+  dark:   std(0x1c211f,{roughness:.7}),
+  chrome: std(0xd3dadd,{roughness:.22,metalness:.9}),
+  inner:  std(0xe4dfcf,{roughness:.85}),
+  ceil:   std(0xf4f2ea,{roughness:.9}),
+  floor:  std(0x474d4a,{roughness:.9}),
+  carpet: std(0x6f1f2c,{roughness:.95}),
+  seat:   std(0x2b5f93,{roughness:.9}),
+  seat2:  std(0x3a72ad,{roughness:.9}),
+  head:   std(0xf3f3f0,{roughness:.9}),
+  rubber: std(0x151515,{roughness:.95}),
+  bumper: std(0xbfc6c9,{roughness:.3,metalness:.7}),
+  acUnit: std(0xe9eef0,{roughness:.5}),
+  rack:   std(0xc9cdd0,{roughness:.5,metalness:.4}),
+  glass:  new T.MeshStandardMaterial({color:0x8fc7d9, transparent:true, opacity:.26, roughness:.05, metalness:.3, side:T.DoubleSide, depthWrite:false}),
+  lamp:   new T.MeshBasicMaterial({color:0xfff3c4}),
+  headL:  new T.MeshStandardMaterial({color:0xfff6cf, emissive:0xffe9a0, emissiveIntensity:1.2}),
+  tail:   new T.MeshStandardMaterial({color:0xd91e1e, emissive:0xff2020, emissiveIntensity:.8}),
+};
+Object.keys(M).forEach(k => { if(M[k].isMeshStandardMaterial) M[k].envMapIntensity = .8; });
+
+/* ---------- bus ---------- */
+const bus = new T.Group(); scene.add(bus);
+const HW = 1.2, HL = 4.0;
+function box(w,h,d,x,y,z,mat,parent){
+  const m = new T.Mesh(new T.BoxGeometry(w,h,d), mat);
+  m.position.set(x,y,z); (parent||bus).add(m); return m;
+}
+const sideMats = (outer,inner,s) => s>0 ? [outer,inner,outer,outer,outer,outer] : [inner,outer,outer,outer,outer,outer];
+const planeAt = (w,h,mat,x,y,z,ry,parent) => { const p = new T.Mesh(new T.PlaneGeometry(w,h), mat); p.position.set(x,y,z); p.rotation.y = ry||0; (parent||bus).add(p); return p; };
+const decalMat = tex => new T.MeshBasicMaterial({map:tex, transparent:true, depthWrite:false, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-2});
+
+// floor + carpet
+box(2.4,.16,8.0, 0,.52,0, [M.dark,M.dark,M.floor,M.dark,M.dark,M.dark]);
+box(.44,.012,7.2, 0,.606,-.2, M.carpet);
+
+// side walls
+[1,-1].forEach(s=>{
+  const x = s*HW;
+  const segs = s>0 ? [[-4.0,2.75],[3.7,4.0]] : [[-4.0,4.0]];
+  segs.forEach(([a,b])=>{
+    box(.06,.92,b-a, x,.74,(a+b)/2, sideMats(M.green,M.inner,s));
+    box(.075,.045,b-a, x,1.2,(a+b)/2, M.gold);
+  });
+  box(.06,.37,8.0, x,2.535,0, sideMats(M.cream,M.ceil,s));
+});
+function windows(s,z0,z1,n){
+  const step = (z1-z0)/n;
+  for(let i=0;i<=n;i++) box(.09,1.15,.1, s*HW,1.775,z0+i*step, M.cream);
+  for(let i=0;i<n;i++){
+    const zc = z0+(i+.5)*step;
+    planeAt(step-.1,1.15,M.glass, s*HW,1.775,zc, Math.PI/2);
+    box(.03,.03,step-.1, s*HW,1.72,zc, M.chrome);
+  }
+}
+windows(1,-3.85,2.75,5);
+windows(-1,-3.85,3.65,6);
+box(.06,1.15,.3, HW,1.775,3.85, sideMats(M.cream,M.inner,1));
+box(.06,1.15,.35, -HW,1.775,3.825, sideMats(M.cream,M.inner,-1));
+
+// roof
+box(2.46,.14,8.06, 0,2.79,0, [M.cream,M.cream,M.cream,M.ceil,M.cream,M.cream]);
+box(2.1,.07,7.5, 0,2.89,0, M.cream);
+box(1.35,.3,2.2, 0,3.075,-.3, M.acUnit);
+box(1.4,.04,2.25, 0,2.94,-.3, M.gold);
+[[-.33,-.85],[.33,-.85],[-.33,.25],[.33,.25]].forEach(p=>{
+  const f = new T.Mesh(new T.CylinderGeometry(.27,.27,.02,20), M.dark); f.position.set(p[0],3.235,p[1]); bus.add(f);
+});
+box(.7,.06,.7, 0,2.93,1.9, M.acUnit);
+
+// front
+box(2.4,.92,.06, 0,.74,HL, [M.green,M.green,M.green,M.green,M.green,M.inner]);
+box(2.4,.045,.075, 0,1.2,HL, M.gold);
+box(2.4,.37,.06, 0,2.535,HL, [M.cream,M.cream,M.cream,M.cream,M.cream,M.ceil]);
+planeAt(2.3,1.15,M.glass, 0,1.775,HL, 0);
+box(.08,1.15,.06, 0,1.775,HL, M.cream);
+[1,-1].forEach(s => box(.09,1.15,.08, s*1.17,1.775,HL, M.cream));
+box(1.0,.34,.03, 0,.66,HL+.04, M.dark);
+[.55,.62,.69,.76].forEach(y => box(.96,.02,.02, 0,y,HL+.06, M.chrome));
+[1,-1].forEach(s=>{
+  const ring = new T.Mesh(new T.CylinderGeometry(.19,.19,.03,20), M.chrome); ring.rotation.x = Math.PI/2; ring.position.set(s*.85,.9,HL+.03); bus.add(ring);
+  const lt = new T.Mesh(new T.CylinderGeometry(.15,.15,.05,20), M.headL); lt.rotation.x = Math.PI/2; lt.position.set(s*.85,.9,HL+.05); bus.add(lt);
+  box(.16,.09,.03, s*1.08,.9,HL+.04, std(0xffa31a,{emissive:0xff8a00,emissiveIntensity:.5}));
+  // mirrors
+  box(.32,.03,.03, s*(HW+.17),1.85,3.72, M.dark);
+  box(.05,.34,.2, s*(HW+.33),1.85,3.74, M.dark);
+  // wipers
+  const w = box(.7,.02,.02, s*.45,1.28,HL+.03, M.dark); w.rotation.z = s*.08;
+});
+box(2.44,.22,.16, 0,.42,HL+.1, M.bumper);
+box(.9,.03,.02, 0,.78,HL+.03, M.gold);
+
+// header sign + plates
+const destTex = canvasTex(512,100,(g,w,h)=>{
+  g.fillStyle = '#0a0a0a'; g.fillRect(0,0,w,h);
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  fitFont(g,'শ্রীমঙ্গল',800,66,440);
+  g.shadowColor = '#ff9d00'; g.shadowBlur = 12; g.fillStyle = '#ffb020';
+  g.fillText('শ্রীমঙ্গল', w/2, h/2+4);
+});
+planeAt(1.7,.29,new T.MeshBasicMaterial({map:destTex}), 0,2.53,HL+.034, 0);
+const plateTex = canvasTex(256,80,(g,w,h)=>{
+  g.fillStyle = '#f4f1e6'; g.fillRect(0,0,w,h);
+  g.strokeStyle = '#124d2c'; g.lineWidth = 5; g.strokeRect(3,3,w-6,h-6);
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#123a24';
+  fitFont(g,'ঢাকা মেট্রো • ব-১১-৩৩৩৩',700,32,230);
+  g.fillText('ঢাকা মেট্রো • ব-১১-৩৩৩৩', w/2, h/2+2);
+});
+const plateMat = new T.MeshBasicMaterial({map:plateTex});
+planeAt(.5,.16,plateMat, 0,.42,HL+.185, 0);
+
+// rear
+box(2.4,.92,.06, 0,.74,-HL, [M.green,M.green,M.green,M.green,M.inner,M.green]);
+box(2.4,.045,.075, 0,1.2,-HL, M.gold);
+box(2.4,.37,.06, 0,2.535,-HL, [M.cream,M.cream,M.cream,M.cream,M.ceil,M.cream]);
+planeAt(2.0,1.15,M.glass, 0,1.775,-HL, 0);
+[1,-1].forEach(s=>{
+  box(.09,1.15,.08, s*1.17,1.775,-HL, M.cream);
+  box(.16,.3,.05, s*1.0,.95,-HL-.04, M.tail);
+  box(.1,.08,.04, s*1.0,.72,-HL-.035, std(0xffa31a,{emissive:0xff8a00,emissiveIntensity:.4}));
+});
+box(2.44,.22,.16, 0,.42,-HL-.1, M.bumper);
+planeAt(.5,.16,plateMat, 0,.42,-HL-.185, Math.PI);
+
+// text on the body
+const sideTex = canvasTex(1600,300,(g,w,h)=>{
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  const t1 = 'শ্রীমঙ্গল এক্সপ্রেস';
+  fitFont(g,t1,800,150,1480);
+  g.lineWidth = 10; g.strokeStyle = 'rgba(5,46,26,.6)'; g.fillStyle = '#fff6d8';
+  g.strokeText(t1,w/2,108); g.fillText(t1,w/2,108);
+  const t2 = 'মিনি এসি  •  ৩৩ সিট';
+  fitFont(g,t2,600,80,1400);
+  g.fillStyle = '#ffd25a'; g.fillText(t2,w/2,232);
+});
+const sideDecal = decalMat(sideTex);
+const rearTex = canvasTex(800,200,(g,w,h)=>{
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  fitFont(g,'শ্রীমঙ্গল এক্সপ্রেস',800,100,740);
+  g.fillStyle = '#fff6d8'; g.fillText('শ্রীমঙ্গল এক্সপ্রেস',w/2,80);
+  fitFont(g,'❄ এসি বাস',600,60,600);
+  g.fillStyle = '#ffd25a'; g.fillText('❄ এসি বাস',w/2,156);
+});
+planeAt(1.9,.475,decalMat(rearTex), 0,.74,-HL-.036, Math.PI);
+
+// wheels + arches
+const wheels = [];
+const archMat = new T.MeshBasicMaterial({color:0x0d0f0e, polygonOffset:true, polygonOffsetFactor:-2, polygonOffsetUnits:-2});
+function makeWheel(s,z){
+  const g = new T.Group();
+  const tire = new T.Mesh(new T.CylinderGeometry(.45,.45,.24,26), M.rubber); tire.rotation.z = Math.PI/2; g.add(tire);
+  const rim = new T.Mesh(new T.CylinderGeometry(.27,.27,.26,20), M.chrome); rim.rotation.z = Math.PI/2; g.add(rim);
+  const hub = new T.Mesh(new T.CylinderGeometry(.09,.09,.3,12), M.dark); hub.rotation.z = Math.PI/2; g.add(hub);
+  for(let k=0;k<6;k++){
+    const a = k/6*TAU;
+    const b = new T.Mesh(new T.CylinderGeometry(.022,.022,.03,6), M.dark);
+    b.rotation.z = Math.PI/2; b.position.set(s*.13, Math.cos(a)*.16, Math.sin(a)*.16); g.add(b);
+  }
+  g.position.set(s*1.31,.45,z);
+  bus.add(g); wheels.push(g);
+  const arch = new T.Mesh(new T.CircleGeometry(.6,24,0,Math.PI), archMat);
+  arch.rotation.y = s*Math.PI/2; arch.position.set(s*(HW+.032),.3,z); bus.add(arch);
+  const fender = new T.Mesh(new T.TorusGeometry(.52,.04,8,24,Math.PI), M.rubber);
+  fender.rotation.y = Math.PI/2; fender.position.set(s*1.33,.45,z); bus.add(fender);
+}
+[1,-1].forEach(s => { makeWheel(s,2.15); makeWheel(s,-2.3); });
+[1,-1].forEach(s => planeAt(3.1,.6,sideDecal, s*(HW+.036),.72,-.05, s*Math.PI/2));
+
+// door
+const doorPivot = new T.Group(); doorPivot.position.set(HW,0,3.7); bus.add(doorPivot);
+box(.05,.85,.94, 0,.775,-.475, sideMats(M.green,M.inner,1), doorPivot);
+box(.065,.045,.94, 0,1.2,-.475, M.gold, doorPivot);
+box(.05,.06,.94, 0,2.32,-.475, M.cream, doorPivot);
+box(.05,1.15,.06, 0,1.775,-.03, M.cream, doorPivot);
+box(.05,1.15,.06, 0,1.775,-.92, M.cream, doorPivot);
+planeAt(.84,1.05,M.glass, 0,1.775,-.475, Math.PI/2, doorPivot);
+box(.03,.4,.03, .05,1.35,-.84, M.chrome, doorPivot);
+let doorAngle = 0;
+const setDoor = a => { doorAngle = a; doorPivot.rotation.y = a; };
+const DOOR_OPEN = -1.83;
+box(.42,.05,.9, HW+.2,.27,3.22, M.chrome);
+const pole = new T.Mesh(new T.CylinderGeometry(.022,.022,1.7,10), M.chrome); pole.position.set(1.0,1.45,2.62); bus.add(pole);
+const pole2 = new T.Mesh(new T.CylinderGeometry(.022,.022,1.5,10), M.chrome); pole2.position.set(1.05,1.35,3.75); bus.add(pole2);
+
+// ceiling, lights, racks
+box(.55,.05,7.4, 0,2.695,-.2, M.ceil);
+box(.14,.015,6.9, 0,2.662,-.2, M.lamp);
+[1,-1].forEach(s=>{
+  box(.34,.025,6.6, s*.96,2.44,-.35, M.rack);
+  box(.02,.09,6.6, s*.8,2.48,-.35, M.rack);
+});
+for(let i=0;i<8;i++){
+  [1,-1].forEach(s => box(.07,.02,.07, s*.32,2.665,2.4-i*.85, M.dark));
+}
+
+// dashboard + driver
+box(2.15,.34,.4, 0,1.0,3.75, std(0x2a2f2d,{roughness:.6}));
+box(.5,.04,.12, .6,1.19,3.72, std(0x101413,{roughness:.4}));
+const wheelSt = new T.Mesh(new T.TorusGeometry(.17,.022,8,22), M.dark);
+wheelSt.position.set(-.62,1.35,3.5); wheelSt.rotation.x = -.5; bus.add(wheelSt);
+const col = new T.Mesh(new T.CylinderGeometry(.025,.025,.3,8), M.dark); col.position.set(-.62,1.22,3.6); col.rotation.x = 1.05; bus.add(col);
+
+// seats
+const seatGeo = {
+  base: new T.BoxGeometry(.34,.4,.34), cush: new T.BoxGeometry(.42,.1,.46),
+  back: new T.BoxGeometry(.42,.62,.1), head: new T.BoxGeometry(.3,.16,.12), plate: new T.PlaneGeometry(.15,.11)
+};
+function numTex(n){
+  return canvasTex(128,96,(g,w,h)=>{
+    g.fillStyle = '#f6f2e6'; g.fillRect(0,0,w,h);
+    g.strokeStyle = '#8a7a3a'; g.lineWidth = 6; g.strokeRect(3,3,w-6,h-6);
+    g.fillStyle = '#1b2a22'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '800 60px '+FONT; g.fillText(bn(n), w/2, h/2+4);
+  });
+}
+let seatCount = 0;
+function makeSeat(x,z,num){
+  const g = new T.Group(); g.position.set(x,0,z);
+  const b = new T.Mesh(seatGeo.base, M.dark); b.position.set(0,.8,0);
+  const c = new T.Mesh(seatGeo.cush, M.seat2); c.position.set(0,1.02,0);
+  const bk = new T.Mesh(seatGeo.back, M.seat); bk.position.set(0,1.4,-.24); bk.rotation.x = -.1;
+  const h = new T.Mesh(seatGeo.head, M.head); h.position.set(0,1.79,-.27); h.rotation.x = -.1;
+  g.add(b,c,bk,h);
+  if(num){
+    const p = new T.Mesh(seatGeo.plate, new T.MeshBasicMaterial({map:numTex(num)}));
+    p.position.set(0,1.55,-.19); p.rotation.x = -.1; g.add(p); seatCount++;
+  }
+  bus.add(g); return g;
+}
+const ROWZ = [1.7,.95,.2,-.55,-1.3,-2.05,-2.8];
+const COLX = [.86,.43,-.43,-.86];
+const SEATS = {};
+ROWZ.forEach((z,r) => COLX.forEach((x,c) => { SEATS[r*4+c+1] = makeSeat(x,z,r*4+c+1); }));
+[.88,.44,0,-.44,-.88].forEach((x,i) => { SEATS[29+i] = makeSeat(x,-3.55,29+i); });
+SEATS[0] = makeSeat(-.62,3.15,0); // driver
+const SEAT_TOTAL = seatCount;
+
+/* ---------- passengers: seat plan + 3D cartoons ---------- */
+// seat : [পূর্ণ নাম, ধরন, ...]   ধরন: m=পুরুষ f=নারী b=ছেলে g=মেয়ে dm/df=ডাক্তার ef=বয়স্কা নারী
+const PAX = {
+  0:['Mamun Bhai (ড্রাইভার)','m'],
+  1:['Abbu','m'], 2:['Ammu','f'], 3:['Khalu','m'], 4:['Sumi Khala','f'],
+  5:['Ammar','b'], 6:['Khalamoni','f'], 7:['Mejo Mama','m'], 8:['Noor Mohammad','m'],
+  9:['Boro Fufi (Lupa)','f'], 10:['Doctor Refat','dm'], 11:['Choto Fufi (Luna)','f'], 12:['Choto Fufa (Liton)','m'],
+  13:['Zoon','b'], 14:['Doctor Ramisha','df'], 15:['Doctor Munna','dm'], 16:['Chondon Mama','m'],
+  17:['Nusaiba','g'], 18:['Dadi (Nan)','ef'], 19:['Sneha','f'], 20:['Dipok','m'],
+  21:['Usama','b'], 22:['Sohan','b'], 23:['Choto Chachu (Opu)','m'], 24:['Choto Chachi (Mitu)','f'],
+  25:['Ariba','g'], 26:['Arisha','g'], 27:['Mezo Chacha (Nipu)','m'], 28:['Mezo Chachi (Sumona)','f'],
+  31:['Neel','b'], 32:['Subaita','g'], 33:['Jumaina','g']
+};
+const skinC = [0xf3cfae,0xe0a877,0xc98d60,0xeebd92];
+const shirtC = [0xe4572e,0x29a3a3,0xf2b134,0x8e6fd1,0x3b9c5a,0xd6577f,0x4a86c5,0xff8a5b];
+const mcache = {};
+const mm = c => mcache[c] || (mcache[c] = new T.MeshStandardMaterial({color:c, roughness:.7}));
+const PG = {
+  head:new T.SphereGeometry(.19,20,14), torso:new T.CylinderGeometry(.13,.17,.44,14), arm:new T.CylinderGeometry(.04,.04,.3,8),
+  leg:new T.CylinderGeometry(.06,.06,.32,8), eye:new T.SphereGeometry(.03,10,8), glint:new T.SphereGeometry(.011,6,6),
+  hand:new T.SphereGeometry(.045,10,8), cheek:new T.SphereGeometry(.035,8,6), hair:new T.SphereGeometry(.2,16,12),
+  bun:new T.SphereGeometry(.075,10,8), ring:new T.TorusGeometry(.045,.007,6,14), smile:new T.TorusGeometry(.05,.009,6,12,Math.PI),
+  shoe:new T.BoxGeometry(.09,.05,.15), steth:new T.TorusGeometry(.14,.014,6,16), shawl:new T.TorusGeometry(.15,.055,8,18)
+};
+function makePerson(kind, idx){
+  const R = rng(idx*37+11), g = new T.Group();
+  const add = (geo,mat,x,y,z) => { const o = new T.Mesh(geo,mat); o.position.set(x,y,z); o.castShadow = true; g.add(o); return o; };
+  const kid = kind==='b' || kind==='g', doc = kind[0]==='d', old = kind==='ef';
+  const fem = 'fgef'.includes(kind) || kind==='df';
+  const skin = mm(skinC[Math.floor(R()*4)]);
+  const shirt = doc ? mm(0xffffff) : mm(shirtC[Math.floor(R()*shirtC.length)]);
+  const hairM = old ? mm(0xeeeeee) : mm([0x1b1b1b,0x2b1a10,0x4a2c17][Math.floor(R()*3)]);
+  add(PG.torso, shirt, 0,.27,-.05);
+  [-1,1].forEach(s => {
+    const th = add(PG.leg, mm(0x2f3e57), s*.075,.07,.12); th.rotation.x = Math.PI/2;
+    const sh = add(PG.leg, mm(0x2f3e57), s*.075,-.19,.27); sh.scale.y = 1.4;
+    add(PG.shoe, mm(0x222222), s*.075,-.43,.3);
+    const a = add(PG.arm, shirt, s*.18,.33,.07); a.rotation.x = -.9;
+    add(PG.hand, skin, s*.18,.235,.185);
+  });
+  add(PG.head, skin, 0,.72,-.03).scale.setScalar(kid ? 1.12 : 1);
+  [-1,1].forEach(s => {
+    add(PG.eye, mm(0x1a1a1a), s*.07,.74,.148);
+    add(PG.glint, mm(0xffffff), s*.07+.01,.752,.176);
+    add(PG.cheek, mm(0xff8fa0), s*.115,.68,.12).scale.z = .5;
+  });
+  const sm = add(PG.smile, mm(0xb03a3a), 0,.665,.158); sm.rotation.z = Math.PI;
+  const hair = add(PG.hair, hairM, 0,.75,-.065); if(kid) hair.scale.setScalar(1.1);
+  if(fem){ add(PG.hair, hairM, 0,.58,-.13).scale.set(.95,1.35,.75); }
+  if(kind==='g'){ [-1,1].forEach(s => { add(PG.bun, hairM, s*.2,.7,-.03); add(PG.bun, mm(0xff5c8a), s*.2,.78,-.03).scale.setScalar(.5); }); }
+  if(old){
+    add(PG.bun, hairM, 0,.93,-.09).scale.setScalar(1.2);
+    const sw = add(PG.shawl, mm(0x8e5ba6), 0,.47,-.05); sw.rotation.x = Math.PI/2;
+    [-1,1].forEach(s => add(PG.ring, mm(0x222222), s*.07,.74,.185));
+  }
+  if(doc){
+    const st = add(PG.steth, mm(0x2c3a44), 0,.47,-.05); st.rotation.x = Math.PI/2;
+    add(PG.hand, mm(0xcfd8dc), 0,.3,.16).scale.setScalar(.55);
+    add(new T.BoxGeometry(.06,.018,.01), mm(0xd32f2f), .07,.36,.1);
+    add(new T.BoxGeometry(.018,.06,.01), mm(0xd32f2f), .07,.36,.1);
+  }
+  if(kid) g.scale.setScalar(.82);
+  return g;
+}
+function nameTag(text, gold){
+  const t = canvasTex(256,64,(g,w,h)=>{
+    g.font = '700 30px '+FONT; const tw = Math.min(w-8, g.measureText(text).width+26);
+    g.fillStyle = gold ? '#f0b31c' : 'rgba(255,255,255,.92)';
+    g.beginPath(); g.roundRect ? g.roundRect((w-tw)/2,8,tw,48,24) : g.rect((w-tw)/2,8,tw,48); g.fill();
+    g.fillStyle = '#10301f'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    fitFont(g,text,700,30,w-30); g.fillText(text, w/2, 33);
+  });
+  const sp = new T.Sprite(new T.SpriteMaterial({map:t, transparent:true, fog:false}));
+  sp.scale.set(.5,.125,1); return sp;
+}
+const pax = [];
+Object.keys(PAX).forEach(k => {
+  const n = +k, d = PAX[n], seat = SEATS[n]; if(!seat) return;
+  const p = makePerson(d[1], n); p.position.set(seat.position.x, 1.07, seat.position.z); bus.add(p);
+  const short = (d[0].match(/\(([^)]+)\)/)||[])[1] || d[0];
+  const tag = nameTag(n===0 ? 'Mamun' : (d[1][0]==='d' ? '🩺 '+d[0].replace('Doctor ','Dr. ') : short), d[1][0]==='d');
+  tag.position.set(seat.position.x, 2.16, seat.position.z-.02); bus.add(tag);
+  pax.push({g:p, ph:n*1.7});
+});
+
+function buildPlan(){
+  const box = $('planGrid'); box.innerHTML = '';
+  const cell = n => {
+    const p = PAX[n], d = document.createElement('div');
+    d.className = 'cell' + (p ? (p[1][0]==='d' ? ' doc' : '') : ' free');
+    d.innerHTML = '<b>'+bn(n)+'</b><span>'+(p ? p[0] : (n===29 ? '👀 আপনার সিট' : 'খালি'))+'</span>'; return d;
+  };
+  const h = document.createElement('div'); h.className = 'prow head';
+  h.innerHTML = '<span>🚪 দরজা</span><span>ড্রাইভার • '+PAX[0][0].replace(/ \(.*\)/,'')+' 🚌</span>'; box.appendChild(h);
+  const lab = t => { const l = document.createElement('div'); l.className = 'rl'; l.textContent = t; return l; };
+  for(let r=0;r<7;r++){
+    const row = document.createElement('div'); row.className = 'prow'; row.appendChild(lab(bn(r+1)));
+    row.appendChild(cell(r*4+1)); row.appendChild(cell(r*4+2)); row.appendChild(document.createElement('div'));
+    row.appendChild(cell(r*4+3)); row.appendChild(cell(r*4+4)); box.appendChild(row);
+  }
+  const rr = document.createElement('div'); rr.className = 'prow rear'; rr.appendChild(lab('পি'));
+  for(let n=29;n<=33;n++) rr.appendChild(cell(n));
+  box.appendChild(rr);
+}
+buildPlan();
+document.querySelectorAll('.planBtn').forEach(b => b.addEventListener('click', () => { $('plan').hidden = false; }));
+$('planClose').addEventListener('click', () => { $('plan').hidden = true; });
+$('plan').addEventListener('click', e => { if(e.target === $('plan')) $('plan').hidden = true; });
+
+
+// shadows
+bus.traverse(o => {
+  if(!o.isMesh) return;
+  const mt = o.material;
+  o.receiveShadow = true;
+  if(Array.isArray(mt) || (mt !== M.glass && mt.type !== 'MeshBasicMaterial')) o.castShadow = true;
+});
+
+/* ---------- world (endlessly scrolling chunks) ---------- */
+const LC = 160, RX = -1.75;
+function hAt(x,z){
+  const d = Math.abs(x-RX);
+  const rise = smooth(7.5,30,d);
+  const w = 1 - smooth(105,150,Math.abs(x));
+  const h = 5.5 + 3.4*Math.sin(z*TAU*2/LC + x*.05) + 2.1*Math.sin(z*TAU*3/LC - x*.07 + 1.3) + 2.0*Math.cos(z*TAU/LC + x*.03 + .6);
+  return Math.max(h,0)*rise*w;
+}
+const teaTex = canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle = '#ffffff'; g.fillRect(0,0,w,h);
+  g.fillStyle = 'rgba(50,85,35,.17)';
+  for(let i=0;i<8;i++) g.fillRect(i*32,0,7,h);
+  const R = rng(3);
+  for(let i=0;i<900;i++){ g.fillStyle = 'rgba(0,60,0,'+(R()*.05)+')'; g.fillRect(R()*w,R()*h,2,2); }
+},{repeat:[300/19.2, 8]});
+const roadTex = canvasTex(128,256,(g,w,h)=>{
+  g.fillStyle = '#3a3c3e'; g.fillRect(0,0,w,h);
+  const R = rng(11);
+  for(let i=0;i<1600;i++){ g.fillStyle = 'rgba('+(R()>.5?255:0)+','+(R()>.5?255:0)+','+(R()>.5?255:0)+','+(R()*.05)+')'; g.fillRect(R()*w,R()*h,2,2); }
+  g.fillStyle = '#e9e9e2';
+  g.fillRect(7,0,5,h); g.fillRect(w-12,0,5,h);
+  g.fillRect(w/2-3,0,6,96);
+},{repeat:[1, LC/8]});
+const terrMat = new T.MeshLambertMaterial({map:teaTex, vertexColors:true});
+const roadMat = new T.MeshLambertMaterial({map:roadTex});
+const vergeMat = new T.MeshLambertMaterial({color:0x9a8f6d});
+
+const signTex = canvasTex(1024,480,(g,w,h)=>{
+  g.fillStyle = '#0a6b3a'; g.fillRect(0,0,w,h);
+  g.strokeStyle = '#ffffff'; g.lineWidth = 14; g.strokeRect(18,18,w-36,h-36);
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#ffffff';
+  fitFont(g,'শ্রীমঙ্গল',800,190,820); g.fillText('শ্রীমঙ্গল',w/2,190);
+  fitFont(g,'Sreemangal  ➜',600,90,820); g.fillStyle = '#ffd25a'; g.fillText('Sreemangal  ➜',w/2,340);
+});
+const signMat = new T.MeshBasicMaterial({map:signTex});
+const poleMat = std(0x9aa3a6,{roughness:.5,metalness:.6});
+
+const dummy = new T.Object3D();
+function makeInst(geo,mat,items){
+  const m = new T.InstancedMesh(geo,mat,items.length);
+  items.forEach((it,i)=>{
+    dummy.position.copy(it.p); dummy.rotation.set(0,it.ry||0,0); dummy.scale.set(it.sx,it.sy,it.sz); dummy.updateMatrix();
+    m.setMatrixAt(i,dummy.matrix); if(it.c) m.setColorAt(i,it.c);
+  });
+  m.instanceMatrix.needsUpdate = true; if(m.instanceColor) m.instanceColor.needsUpdate = true;
+  m.frustumCulled = false; return m;
+}
+const bushGeo = new T.IcosahedronGeometry(1,0);
+const trunkGeo = new T.CylinderGeometry(.16,.26,1,6); trunkGeo.translate(0,.5,0);
+const canGeo = new T.IcosahedronGeometry(1,1);
+const bodyGeo = new T.ConeGeometry(.22,1.05,7); bodyGeo.translate(0,.52,0);
+const headGeo = new T.SphereGeometry(.11,8,6); headGeo.translate(0,1.16,0);
+const hatGeo = new T.ConeGeometry(.3,.2,8); hatGeo.translate(0,1.32,0);
+const whiteLam = () => new T.MeshLambertMaterial({color:0xffffff});
+const trunkMat = new T.MeshLambertMaterial({color:0x5b4632});
+
+function buildChunk(idx){
+  const g = new T.Group(); const R = rng(1234+idx*77);
+  // terrain
+  const geo = new T.PlaneGeometry(300,LC,150,80); geo.rotateX(-Math.PI/2);
+  const pos = geo.attributes.position, nor = geo.attributes.normal;
+  const cols = new Float32Array(pos.count*3);
+  for(let i=0;i<pos.count;i++){
+    const x = pos.getX(i), z = pos.getZ(i), h = hAt(x,z);
+    pos.setY(i,h);
+    const e = .6;
+    const dx = (hAt(x+e,z)-hAt(x-e,z))/(2*e), dz = (hAt(x,z+e)-hAt(x,z-e))/(2*e);
+    const n = V(-dx,1,-dz).normalize(); nor.setXYZ(i,n.x,n.y,n.z);
+    const t = clamp(h/9,0,1);
+    const nz = .5 + .5*Math.sin(x*.21+z*.17)*Math.cos(z*.13-x*.09);
+    const k = clamp(t*.75 + nz*.3 - .05, 0, 1);
+    cols[i*3]   = .60 + (.30-.60)*k;
+    cols[i*3+1] = .78 + (.55-.78)*k;
+    cols[i*3+2] = .34 + (.20-.34)*k;
+  }
+  geo.setAttribute('color', new T.BufferAttribute(cols,3));
+  const terr = new T.Mesh(geo, terrMat); terr.position.y = -.03; terr.receiveShadow = true; g.add(terr);
+  // road
+  const road = new T.Mesh(new T.PlaneGeometry(7,LC), roadMat); road.rotation.x = -Math.PI/2; road.position.set(RX,.015,0); road.receiveShadow = true; g.add(road);
+  [-1,1].forEach(s => {
+    const v = new T.Mesh(new T.PlaneGeometry(1.6,LC), vergeMat); v.rotation.x = -Math.PI/2; v.position.set(RX+s*4.3,.008,0); v.receiveShadow = true; g.add(v);
+  });
+  // tea bushes
+  const bushes = [];
+  for(let m=0;m<125;m++){
+    const x = -120 + 1.5 + 2.4*m, d = Math.abs(x-RX);
+    if(d < 9.5 || d > 29 || m%7===3) continue;
+    for(let k=0;k<100;k++){
+      const z = -LC/2 + (k+.5)*1.6 + (R()-.5)*.3, xx = x + (R()-.5)*.3;
+      const c = new T.Color().setHSL(.26+R()*.05, .48+R()*.16, .27+R()*.11);
+      bushes.push({p:V(xx,hAt(xx,z)+.12,z), ry:R()*3, sx:.95+R()*.15, sy:.5+R()*.12, sz:.85+R()*.2, c});
+    }
+  }
+  const bm = makeInst(bushGeo, whiteLam(), bushes); g.add(bm);
+  // trees
+  const trunks = [], canopies = [];
+  const addTree = (x,z,H) => {
+    const y = hAt(x,z), cw = H*(.42+R()*.14);
+    trunks.push({p:V(x,y,z), sx:.7+H*.05, sy:H, sz:.7+H*.05});
+    const c = new T.Color().setHSL(.27+R()*.06, .5+R()*.15, .2+R()*.09);
+    canopies.push({p:V(x,y+H*.95,z), ry:R()*3, sx:cw*1.15, sy:cw*.5, sz:cw*1.15, c});
+  };
+  for(let k=0;k<LC/11;k++){
+    [-1,1].forEach(s => { if(R()<.75) addTree(RX+s*(6.4+R()*3.2), -LC/2+k*11+R()*6, 5+R()*3.5); });
+  }
+  for(let k=0;k<50;k++){
+    const s = R()<.5?-1:1, d = 12+R()*38;
+    addTree(RX+s*d, -LC/2+R()*LC, 6+R()*4);
+  }
+  g.add(makeInst(trunkGeo, trunkMat, trunks));
+  g.add(makeInst(canGeo, whiteLam(), canopies));
+  // tea pickers
+  const bodies = [], heads = [], hats = [];
+  const palette = [0xc0392b,0x2e86c1,0xd4ac0d,0x8e44ad,0x1e8449,0xe67e22];
+  for(let k=0;k<40;k++){
+    const m = 30 + Math.floor(R()*22), x = -120 + 1.5 + 2.4*m + (m%2?0:0), d = Math.abs(x-RX);
+    if(d < 10 || d > 26 || m%7===3){ continue; }
+    const z = -LC/2 + R()*LC, y = hAt(x,z)+.22, ry = R()*TAU;
+    const p = V(x,y,z);
+    bodies.push({p, ry, sx:1, sy:1, sz:1, c:new T.Color(palette[Math.floor(R()*palette.length)])});
+    heads.push({p:p.clone(), ry, sx:1, sy:1, sz:1, c:new T.Color(0xa87850)});
+    hats.push({p:p.clone(), ry, sx:1, sy:1, sz:1, c:new T.Color(0xe6c36a)});
+  }
+  if(bodies.length){ g.add(makeInst(bodyGeo,whiteLam(),bodies)); g.add(makeInst(headGeo,whiteLam(),heads)); g.add(makeInst(hatGeo,whiteLam(),hats)); }
+  // road sign (left side, faces oncoming bus)
+  const pl = new T.Mesh(new T.CylinderGeometry(.05,.05,3.4,8), poleMat); pl.position.set(3.9,1.7,25); g.add(pl);
+  const bd = new T.Mesh(new T.PlaneGeometry(2.6,1.22), signMat); bd.rotation.y = Math.PI; bd.position.set(3.9,3.1,24.95); g.add(bd);
+  const bk = new T.Mesh(new T.BoxGeometry(2.7,1.3,.06), poleMat); bk.position.set(3.9,3.1,25.02); g.add(bk);
+  return g;
+}
+const chunks = [];
+for(let i=0;i<3;i++){ const c = buildChunk(i); c.position.z = (i-1)*LC; scene.add(c); chunks.push(c); }
+
+/* ---------- welcome arch ---------- */
+const arch = new T.Group(); scene.add(arch);
+{
+  const pm = std(0x0c7a43,{roughness:.5});
+  [-1,1].forEach(s => {
+    const p = new T.Mesh(new T.BoxGeometry(.9,7,.9), pm); p.position.set(RX+s*6.5,3.5,0); arch.add(p);
+    const cap = new T.Mesh(new T.SphereGeometry(.65,14,10), M.gold); cap.position.set(RX+s*6.5,7.3,0); arch.add(cap);
+  });
+  const beam = new T.Mesh(new T.BoxGeometry(13.6,2.1,.8), pm); beam.position.set(RX,6.6,0); arch.add(beam);
+  const trim = new T.Mesh(new T.BoxGeometry(13.7,.14,.9), M.gold); trim.position.set(RX,7.7,0); arch.add(trim);
+  const trim2 = trim.clone(); trim2.position.y = 5.5; arch.add(trim2);
+  const tex1 = canvasTex(2048,290,(g,w,h)=>{
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = '#fff6d8'; fitFont(g,'শ্রীমঙ্গলে স্বাগতম',800,170,1800); g.fillText('শ্রীমঙ্গলে স্বাগতম',w/2,122);
+    g.fillStyle = '#ffd25a'; fitFont(g,'🍃 বাংলাদেশের চায়ের রাজধানী 🍃',600,84,1700); g.fillText('🍃 বাংলাদেশের চায়ের রাজধানী 🍃',w/2,238);
+  });
+  const tex2 = canvasTex(2048,290,(g,w,h)=>{
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = '#fff6d8'; fitFont(g,'আবার আসবেন',800,170,1800); g.fillText('আবার আসবেন',w/2,122);
+    g.fillStyle = '#ffd25a'; fitFont(g,'🍵 এক কাপ চা হয়ে যাক 🍵',600,84,1700); g.fillText('🍵 এক কাপ চা হয়ে যাক 🍵',w/2,238);
+  });
+  const f = new T.Mesh(new T.PlaneGeometry(13.0,1.84), new T.MeshBasicMaterial({map:tex1})); f.rotation.y = Math.PI; f.position.set(RX,6.6,-.42); arch.add(f);
+  const b = new T.Mesh(new T.PlaneGeometry(13.0,1.84), new T.MeshBasicMaterial({map:tex2})); b.position.set(RX,6.6,.42); arch.add(b);
+}
+
+/* ---------- oncoming traffic ---------- */
+function vbox(g,w,h,d,x,y,z,mat){ return box(w,h,d,x,y,z,mat,g); }
+function vwheels(g,pts,r){ pts.forEach(p => { const w = new T.Mesh(new T.CylinderGeometry(r,r,.28,12), M.rubber); w.rotation.z = Math.PI/2; w.position.set(p[0],r,p[1]); g.add(w); }); }
+const vglass = std(0x1a2a30,{roughness:.2,metalness:.4});
+function mkTruck(){
+  const g = new T.Group();
+  vbox(g,2.4,.3,6.6,0,.75,0,M.dark);
+  vbox(g,2.5,2.2,4.6,0,2.0,-.9,std(0xe07b2b,{roughness:.6}));
+  vbox(g,2.5,.12,4.6,0,1.0,-.9,std(0x2a7d4f));
+  vbox(g,2.3,1.7,1.7,0,1.6,2.6,std(0x2a7d4f,{roughness:.5}));
+  vbox(g,2.32,.7,.05,0,2.0,3.46,vglass);
+  vwheels(g,[[-1.1,2.4],[1.1,2.4],[-1.1,-1.8],[1.1,-1.8],[-1.1,-2.9],[1.1,-2.9]],.5);
+  return g;
+}
+function mkCar(c){
+  const g = new T.Group(), m = std(c,{roughness:.35,metalness:.2});
+  vbox(g,1.75,.6,3.9,0,.65,0,m); vbox(g,1.55,.55,2.0,0,1.2,-.15,m); vbox(g,1.57,.38,1.8,0,1.22,-.15,vglass);
+  vwheels(g,[[-.85,1.25],[.85,1.25],[-.85,-1.25],[.85,-1.25]],.32);
+  return g;
+}
+function mkCNG(){
+  const g = new T.Group(), m = std(0x2fa35a,{roughness:.5});
+  vbox(g,1.3,.5,2.4,0,.6,0,m); vbox(g,1.2,1.0,1.4,0,1.35,-.25,m); vbox(g,1.3,.08,1.5,0,1.9,-.25,M.dark); vbox(g,1.22,.5,.05,0,1.45,.46,vglass);
+  vwheels(g,[[-.55,.9],[.55,.9],[0,-.9]],.28);
+  return g;
+}
+function mkCoaster(){
+  const g = new T.Group();
+  vbox(g,2.3,2.2,6.8,0,1.6,0,std(0xd94f2b,{roughness:.4}));
+  vbox(g,2.32,.7,5.6,0,1.95,-.3,vglass);
+  vbox(g,2.32,.08,6.8,0,1.1,0,M.cream);
+  vwheels(g,[[-1.1,2.1],[1.1,2.1],[-1.1,-2.1],[1.1,-2.1]],.45);
+  return g;
+}
+const traffic = [];
+[[mkTruck(),9,60],[mkCar(0xc0392b),13,135],[mkCNG(),8,205],[mkCoaster(),11,20],[mkCar(0x2e86c1),14,270]].forEach(([g,v,z]) => {
+  g.rotation.y = Math.PI; g.position.set(-3.5,0,z); scene.add(g); traffic.push({g,v,z});
+});
+
+/* ---------- state ---------- */
+let mode = 'outside';          // outside | cine | inside
+let busy = false;
+let seated = false;
+let speed = 0, travelled = 0, time = 0;
+const trip = {state:'idle', start:0, D:1100};
+let archW = trip.D + 18;
+const orbit = {az:.95, el:.2, dist:13, target:V(0,1.3,0)};
+const cine = {pos:V(0,0,0), look:V(0,0,0)};
+const view = {pos:V(0.3,2.1,3.05), yaw:Math.PI, pitch:-.05};
+const STAND = V(.3,2.1,3.05);
+const DOORLOOK = V(3.5,1.6,3.3);
+const SEAT_Z = -3.55;
+const fdir = (yaw,pitch) => V(Math.sin(yaw)*Math.cos(pitch), Math.sin(pitch), Math.cos(yaw)*Math.cos(pitch));
+const lookPt = (pos,yaw,pitch) => pos.clone().add(fdir(yaw,pitch).multiplyScalar(3));
+function orbitPos(az,el,dist){
+  const cp = Math.cos(el);
+  return V(orbit.target.x + dist*Math.sin(az)*cp, orbit.target.y + dist*Math.sin(el), orbit.target.z + dist*Math.cos(az)*cp);
+}
+
+function tween(dur,fn){
+  return new Promise(res => {
+    const t0 = performance.now();
+    (function step(now){
+      const t = clamp((now-t0)/(dur*1000),0,1);
+      fn(easeIO(t));
+      if(t<1) requestAnimationFrame(step); else res();
+    })(t0);
+  });
+}
+function flyPath(pts,looks,dur){
+  const seg = []; let total = 0;
+  for(let i=1;i<pts.length;i++){ const l = pts[i].distanceTo(pts[i-1]); seg.push(l); total += l; }
+  return tween(dur, k => {
+    let d = k*total, i = 0;
+    while(i<seg.length-1 && d>seg[i]){ d -= seg[i]; i++; }
+    const t = seg[i]>0 ? clamp(d/seg[i],0,1) : 1;
+    cine.pos.lerpVectors(pts[i],pts[i+1],t);
+    cine.look.lerpVectors(looks[i],looks[i+1],t);
+  });
+}
+function moveDoor(target,dur){
+  const from = doorAngle;
+  return tween(dur, k => setDoor(from + (target-from)*k));
+}
+const waitFor = cond => new Promise(res => { const iv = setInterval(() => { if(cond()){ clearInterval(iv); res(); } }, 80); });
+function toast(t){ const el = $('toast'); el.textContent = t; el.hidden = false; }
+function hideToast(){ $('toast').hidden = true; }
+
+/* ---------- flows ---------- */
+async function enterBus(){
+  if(mode!=='outside' || busy) return;
+  busy = true;
+  $('outsideHud').hidden = true; $('pin').hidden = true;
+  mode = 'cine';
+  cine.pos.copy(camera.position); cine.look.copy(orbit.target);
+  const P1 = V(5.6,2.1,6.9), L1 = V(1.3,1.5,3.3), P2 = V(4.0,2.0,3.35), L2 = V(.6,1.7,3.2);
+  await flyPath([cine.pos.clone(),P1],[cine.look.clone(),L1],1.6);
+  await Promise.all([ moveDoor(DOOR_OPEN,1.2), flyPath([P1,P2],[L1,L2],1.2) ]);
+  const L3 = lookPt(STAND, Math.PI, -.05);
+  await flyPath([P2, V(1.8,2.05,3.25), STAND.clone()], [L2, V(0,1.9,3.0), L3], 2.0);
+  view.pos.copy(STAND); view.yaw = Math.PI; view.pitch = -.05; seated = false;
+  $('seatBtn').textContent = '🪑 ২৯ নং জানালার সিটে বসুন';
+  mode = 'inside';
+  $('insideHud').hidden = false;
+  startTrip();
+  busy = false;
+  moveDoor(0,1.0);
+}
+function startTrip(){
+  trip.state = 'driving'; trip.start = travelled;
+  const ahead = archW - travelled;
+  if(ahead > 60 || ahead < -25) archW = travelled + trip.D + 18;
+  $('welcome').hidden = true; $('insideHud').hidden = false;
+}
+function arrive(){
+  trip.state = 'arrived'; speed = 0;
+  setTimeout(() => { if(trip.state==='arrived' && mode==='inside'){ $('welcome').hidden = false; $('insideHud').hidden = true; } }, 500);
+}
+async function exitBus(){
+  if(mode!=='inside' || busy) return;
+  busy = true;
+  $('insideHud').hidden = true; $('welcome').hidden = true;
+  if(trip.state==='driving'){ trip.state = 'braking'; toast('বাস থামছে…'); }
+  await waitFor(() => speed < .05);
+  hideToast();
+  mode = 'cine';
+  const cur = view.pos.clone(), lk = lookPt(view.pos, view.yaw, view.pitch);
+  cine.pos.copy(cur); cine.look.copy(lk);
+  const pts = [cur], looks = [lk];
+  if(seated){ pts.push(V(0,2.1,cur.z), V(0,2.1,2.9)); looks.push(DOORLOOK.clone(), DOORLOOK.clone()); }
+  pts.push(STAND.clone()); looks.push(DOORLOOK.clone());
+  await flyPath(pts, looks, seated ? 2.2 : 1.0);
+  seated = false;
+  await moveDoor(DOOR_OPEN,1.0);
+  const P2 = V(4.0,2.0,3.35), L2 = V(.6,1.7,3.2);
+  const az = .95, el = .2, dist = 13;
+  const Pend = orbitPos(az,el,dist);
+  await flyPath([STAND.clone(), V(1.8,2.05,3.25), P2, Pend], [DOORLOOK.clone(), V(3.0,1.7,3.3), V(1.3,1.5,3.3), orbit.target.clone()], 2.4);
+  orbit.az = az; orbit.el = el; orbit.dist = dist;
+  mode = 'outside';
+  $('outsideHud').hidden = false;
+  trip.state = 'idle';
+  busy = false;
+  lastInteract = time;
+  moveDoor(0,1.0);
+}
+async function toggleSeat(){
+  if(mode!=='inside' || busy) return;
+  busy = true;
+  mode = 'cine';
+  const cur = view.pos.clone(), lk = lookPt(view.pos, view.yaw, view.pitch);
+  cine.pos.copy(cur); cine.look.copy(lk);
+  const seatPos = V(.88,1.82,SEAT_Z-.02);
+  if(!seated){
+    const endLook = lookPt(seatPos, Math.PI/2, 0);
+    await flyPath([cur, V(0,2.1,2.6), V(0,2.05,-2.95), seatPos], [lk, V(0,1.9,0), V(0,1.9,-2), endLook], 2.2);
+    view.pos.copy(seatPos); view.yaw = Math.PI/2; view.pitch = 0; seated = true;
+    $('seatBtn').textContent = '🚶 সিট থেকে উঠুন';
+  }else{
+    const endLook = lookPt(STAND, Math.PI, -.05);
+    await flyPath([cur, V(0,2.05,-2.95), V(0,2.1,2.6), STAND.clone()], [lk, V(0,1.9,SEAT_Z+3), V(0,1.9,-2), endLook], 2.0);
+    view.pos.copy(STAND); view.yaw = Math.PI; view.pitch = -.05; seated = false;
+    $('seatBtn').textContent = '🪑 ২৯ নং জানালার সিটে বসুন';
+  }
+  mode = 'inside'; busy = false;
+}
+
+/* ---------- input ---------- */
+const ray = new T.Raycaster(), ndc = new T.Vector2();
+function hitBus(cx,cy){
+  ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1);
+  ray.setFromCamera(ndc,camera);
+  return ray.intersectObject(bus,true).length > 0;
+}
+const ptr = new Map(); let down = null, pinchD = 0, lastInteract = 0;
+canvas.addEventListener('pointerdown', e => {
+  try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
+  ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptr.size===1) down = {x:e.clientX,y:e.clientY,t:performance.now(),m:0};
+  else { down = null; const a = [...ptr.values()]; pinchD = Math.hypot(a[0].x-a[1].x, a[0].y-a[1].y); }
+  lastInteract = time;
+});
+canvas.addEventListener('pointermove', e => {
+  const p = ptr.get(e.pointerId);
+  if(!p){
+    if(e.pointerType==='mouse' && mode==='outside' && !busy) canvas.style.cursor = hitBus(e.clientX,e.clientY) ? 'pointer' : 'grab';
+    return;
+  }
+  const dx = e.clientX-p.x, dy = e.clientY-p.y; p.x = e.clientX; p.y = e.clientY;
+  lastInteract = time;
+  if(ptr.size===1){
+    if(down) down.m += Math.abs(dx)+Math.abs(dy);
+    if(mode==='outside'){ orbit.az -= dx*.006; orbit.el = clamp(orbit.el+dy*.005,.03,1.35); }
+    else if(mode==='inside'){ view.yaw += dx*.0042; view.pitch = clamp(view.pitch+dy*.0042,-1.2,1.2); }
+  }else if(ptr.size===2 && mode==='outside'){
+    const a = [...ptr.values()], d = Math.hypot(a[0].x-a[1].x, a[0].y-a[1].y);
+    if(pinchD>0 && d>0) orbit.dist = clamp(orbit.dist*pinchD/d, 7, 32);
+    pinchD = d;
+  }
+});
+function endPtr(e){
+  if(!ptr.has(e.pointerId)) return;
+  ptr.delete(e.pointerId);
+  if(down && ptr.size===0 && e.type==='pointerup' && down.m<8 && performance.now()-down.t<500 && mode==='outside' && !busy){
+    if(hitBus(e.clientX,e.clientY)) enterBus();
+  }
+  if(ptr.size<2) pinchD = 0;
+  if(ptr.size===0) down = null;
+}
+canvas.addEventListener('pointerup', endPtr);
+canvas.addEventListener('pointercancel', endPtr);
+canvas.addEventListener('wheel', e => {
+  if(mode==='outside'){ e.preventDefault(); orbit.dist = clamp(orbit.dist*(1+e.deltaY*.001),7,32); lastInteract = time; }
+},{passive:false});
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+$('pin').addEventListener('click', enterBus);
+$('enterBtn').addEventListener('click', enterBus);
+$('exitBtn').addEventListener('click', exitBus);
+$('leaveBtn').addEventListener('click', exitBus);
+$('seatBtn').addEventListener('click', toggleSeat);
+$('againBtn').addEventListener('click', () => { if(mode==='inside' && !busy) startTrip(); });
+
+/* ---------- loop ---------- */
+function resize(){
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect = w/h; camera.fov = w/h < .85 ? 72 : 58; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+let lastSpeedTxt = '', pinShown = false;
+function updateTrip(dt){
+  if(trip.state==='driving'){
+    const remaining = trip.D - (travelled - trip.start);
+    const brakeDist = speed*speed/(2*3.5);
+    if(remaining <= brakeDist+2){
+      const a = speed*speed/(2*Math.max(remaining,.5));
+      speed = Math.max(0, speed - a*dt);
+      if(remaining <= .3 || speed < .15) arrive();
+    }else{
+      speed = Math.min(20, speed + 3.0*dt);
+    }
+  }else if(trip.state==='braking'){
+    speed = Math.max(0, speed - 5*dt);
+  }else{
+    speed = 0;
+  }
+  const ds = speed*dt;
+  travelled += ds;
+  chunks.forEach(c => { c.position.z -= ds; if(c.position.z < -1.5*LC) c.position.z += 3*LC; });
+  wheels.forEach(w => { w.rotation.x += ds/.45; });
+  traffic.forEach(v => { v.z -= (v.v+speed)*dt; if(v.z < -110) v.z = 170 + Math.random()*120; v.g.position.z = v.z; });
+  const az = archW - travelled;
+  if(az < -40 && trip.state==='driving') archW = trip.start + trip.D + 18;
+  arch.position.z = archW - travelled;
+  { const sh = speed>.5 ? 1 : .25; pax.forEach(p => { p.g.rotation.z = Math.sin(time*1.4+p.ph)*.025*sh; p.g.position.y = 1.07 + Math.abs(Math.sin(time*2.1+p.ph))*.006*sh; }); }
+  bus.position.y = speed>0.5 ? Math.sin(time*23)*.004*(speed/20) : 0;
+  clouds.rotation.y += dt*.002;
+}
+function updateHud(){
+  if(mode==='inside' || $('welcome').hidden===false){
+    const txt = bn(Math.round(speed*3.6)) + ' কি.মি./ঘণ্টা';
+    if(txt !== lastSpeedTxt){ $('speedTxt').textContent = txt; lastSpeedTxt = txt; }
+    const pct = clamp((travelled-trip.start)/trip.D,0,1)*100;
+    $('barFill').style.width = pct+'%'; $('busIcon').style.left = pct+'%';
+  }
+}
+const tmpV = new T.Vector3();
+function updatePin(){
+  const pin = $('pin');
+  if(mode!=='outside' || busy){ if(pinShown){ pin.hidden = true; pinShown = false; } return; }
+  tmpV.set(.4,3.7,.5).project(camera);
+  if(tmpV.z > 1){ if(pinShown){ pin.hidden = true; pinShown = false; } return; }
+  if(!pinShown){ pin.hidden = false; pinShown = true; }
+  pin.style.left = ((tmpV.x*.5+.5)*innerWidth)+'px';
+  pin.style.top = ((-tmpV.y*.5+.5)*innerHeight)+'px';
+}
+function updateCamera(dt){
+  if(mode==='outside'){
+    if(ptr.size===0 && time-lastInteract > 3) orbit.az += .06*dt;
+    orbit.el = clamp(orbit.el,.03,1.35);
+    camera.position.copy(orbitPos(orbit.az,orbit.el,orbit.dist));
+    camera.lookAt(orbit.target);
+  }else if(mode==='cine'){
+    camera.position.copy(cine.pos); camera.lookAt(cine.look);
+  }else{
+    const f = fdir(view.yaw,view.pitch), sh = clamp(speed/20,0,1);
+    camera.position.set(view.pos.x + Math.sin(time*11.3)*.0035*sh, view.pos.y + (Math.sin(time*17.1)*.005 + Math.sin(time*4.7)*.003)*sh, view.pos.z);
+    camera.lookAt(camera.position.x+f.x, camera.position.y+f.y, camera.position.z+f.z);
+  }
+}
+const clock = new T.Clock();
+let first = true;
+function frame(){
+  requestAnimationFrame(frame);
+  const dt = Math.min(clock.getDelta(), .05);
+  time += dt;
+  updateTrip(dt); updateCamera(dt); updatePin(); updateHud();
+  renderer.render(scene,camera);
+  if(first){
+    first = false;
+    $('loader').classList.add('done');
+    $('outsideHud').hidden = false;
+    lastInteract = time - 2;
+  }
+}
+frame();
+}
+</script>
+<script>
+(function(){
+  var urls = ['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+              'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js',
+              'https://unpkg.com/three@0.128.0/build/three.min.js',
+              'three.min.js'], i = 0;
+  function fail(){
+    var t = document.getElementById('loaderTxt');
+    t.innerHTML = 'ত্রিমাত্রিক লাইব্রেরি (three.js) লোড হয়নি।<br>ইন্টারনেট/VPN পরীক্ষা করে পেজটি রিলোড দিন।';
+    document.querySelector('.spin').style.display = 'none';
+  }
+  function next(){
+    if(window.THREE){ main(); return; }
+    if(i >= urls.length){ fail(); return; }
+    var done = false, sc = document.createElement('script');
+    function go(){ if(done) return; done = true; clearTimeout(tm); if(window.THREE) main(); else next(); }
+    var tm = setTimeout(go, 9000);
+    sc.onload = go; sc.onerror = go; sc.src = urls[i++];
+    document.head.appendChild(sc);
+  }
+  next();
+})();
+</script>
+</body>
+</html>
